@@ -46,7 +46,7 @@ GO
 EXEC master.dbo.sp_serveroption @server=N'localhost\ls1', @optname=N'remote proc transaction promotion', @optvalue=N'true'
 GO
 
-USE ['$(dbname)']
+USE [$(dbname)]
 
 BEGIN
 INSERT INTO [localhost\ls1].[LSONE_CTC].dbo.RETAILDEPARTMENT(DEPARTMENTID,NAME,NAMEALIAS,DIVISIONID,DIVISIONMASTERID,MASTERID,DELETED,CREATED,MODIFIED)
