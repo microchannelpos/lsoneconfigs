@@ -80,6 +80,9 @@ WHERE C.ID IN (SELECT CATEGORYID FROM Item where ItemLookupCode not in (select i
 END
 GO
 
+DELETE FROM [localhost\ls1].[LSONE_CTC].dbo.INVENTITEMBARCODE
+WHERE ITEMID like 'S%' or ITEMID like 'RMS%'
+
 DELETE FROM [localhost\ls1].[LSONE_CTC].dbo.RETAILITEM
 WHERE ITEMID like 'S%' or ITEMID like 'RMS%'
 
@@ -98,9 +101,6 @@ FROM Item
 where inactive = 0  AND ItemLookupCode not in (select itembarcode from [localhost\ls1].[LSONE_CTC].dbo.INVENTITEMBARCODE) 
 END
 GO
-
-DELETE FROM [localhost\ls1].[LSONE_CTC].dbo.INVENTITEMBARCODE
-WHERE ITEMID like 'S%' or ITEMID like 'RMS%'
 
 BEGIN
 INSERT INTO [localhost\ls1].[LSONE_CTC].dbo.INVENTITEMBARCODE
