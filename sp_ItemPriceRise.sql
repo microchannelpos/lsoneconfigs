@@ -1,11 +1,9 @@
 USE [LSONE_CTC]
 GO
 
-/****** Object:  StoredProcedure [dbo].[CURRENCIES]    Script Date: 29/06/2020 12:08:23 AM ******/
 DROP PROCEDURE [dbo].[sp_ITEMPRERISE]
 GO
 
-/****** Object:  StoredProcedure [dbo].[CURRENCIES]    Script Date: 29/06/2020 12:08:23 AM ******/
 SET ANSI_NULLS ON
 GO
 
@@ -44,11 +42,9 @@ GO
 USE [LSONE_CTC]
 GO
 
-/****** Object:  StoredProcedure [dbo].[CURRENCIES]    Script Date: 29/06/2020 12:08:23 AM ******/
 DROP PROCEDURE [dbo].[sp_ApplyMarkupsPDT]
 GO
 
-/****** Object:  StoredProcedure [dbo].[CURRENCIES]    Script Date: 29/06/2020 12:08:23 AM ******/
 SET ANSI_NULLS ON
 GO
 
@@ -65,7 +61,8 @@ BEGIN
 	
 UPDATE PRICEDISCTABLE
 SET AMOUNT = ri.purchaseprice * (1 + (ipr.MARKUP_PRICE/100)),
-AMOUNTINCLTAX = ROUND(ri.purchaseprice * 1.1 * (1 + (ipr.MARKUP_PRICE/100))/5,2) * 5
+AMOUNTINCLTAX = ROUND(ri.purchaseprice * 1.1 * (1 + (ipr.MARKUP_PRICE/100))/5,2) * 5,
+MARKUPPERC = (1 + (ipr.MARKUP_PRICE/100))
 FROM PRICEDISCTABLE pdt
 INNER JOIN RETAILITEM ri on pdt.ITEMRELATION = ri.itemid
 INNER JOIN ITEMPRERISE ipr on pdt.itemrelation = ipr.ItemLookupCode
