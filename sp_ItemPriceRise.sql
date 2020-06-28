@@ -66,6 +66,7 @@ MARKUPPERC = (1 + (ipr.MARKUP_PRICE/100))
 FROM PRICEDISCTABLE pdt
 INNER JOIN RETAILITEM ri on pdt.ITEMRELATION = ri.itemid
 INNER JOIN ITEMPRERISE ipr on pdt.itemrelation = ipr.ItemLookupCode
+WHERE ipr.cost <> ri.purchaseprice
 
 END
 
