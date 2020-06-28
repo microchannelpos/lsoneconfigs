@@ -1,0 +1,79 @@
+USE [LSONE_CTC]
+GO
+
+/****** Object:  StoredProcedure [dbo].[CURRENCIES]    Script Date: 29/06/2020 12:08:23 AM ******/
+DROP PROCEDURE [dbo].[sp_ITEMPRERISE]
+GO
+
+/****** Object:  StoredProcedure [dbo].[CURRENCIES]    Script Date: 29/06/2020 12:08:23 AM ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+
+CREATE PROCEDURE [dbo].[sp_ITEMPRERISE]
+
+AS
+
+BEGIN
+	
+	IF OBJECT_ID('dbo.ITEMPRERISE', 'U') IS NOT NULL
+	DROP TABLE ITEMPRERISE
+
+	CREATE TABLE ITEMPRERISE (
+	ItemLookupCode NVARCHAR(25),
+	Price money,
+	Cost money,
+	Markup_Price float)
+
+	INSERT ITEMPRERISE (ItemLookupCode, Price, Cost, Markup_Price)
+	SELECT ri.itemid, pdt.AMOUNTINCLTAX, ri.PURCHASEPRICE, 
+	CASE WHEN ri.PURCHASEPRICE = 0 then 0 WHEN pdt.AMOUNTINCLTAX%0.05 = 0 THEN ROUND(2.*((pdt.AMOUNTINCLTAX - (ri.PURCHASEPRICE *1.1))/(ri.PURCHASEPRICE*1.1)),2)/2 *100 ELSE ROUND(((pdt.AMOUNTINCLTAX - (ri.PURCHASEPRICE *1.1))/(ri.PURCHASEPRICE*1.1))*100,2) END AS MARKUP_PRICE
+	 FROM RETAILITEM ri
+	INNER JOIN PRICEDISCTABLE pdt on ri.ITEMID = pdt.ITEMRELATION
+	INNER JOIN RETAILGROUP rg on ri.RETAILGROUPMASTERID = rg.MASTERID
+	INNER JOIN RETAILDEPARTMENT rd on rg.DEPARTMENTMASTERID = rd.MASTERID
+	WHERE rd.name in ('PACKETS','CARTONS','TOBACCO')
+
+END
+
+GO
+
+USE [LSONE_CTC]
+GO
+
+/****** Object:  StoredProcedure [dbo].[CURRENCIES]    Script Date: 29/06/2020 12:08:23 AM ******/
+DROP PROCEDURE [dbo].[sp_ApplyMarkupsPDT]
+GO
+
+/****** Object:  StoredProcedure [dbo].[CURRENCIES]    Script Date: 29/06/2020 12:08:23 AM ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+
+CREATE PROCEDURE [dbo].[sp_ApplyMarkupsPDT]
+
+AS
+
+BEGIN
+	
+	
+UPDATE PRICEDISCTABLE
+SET AMOUNT = ri.purchaseprice * (1 + (ipr.MARKUP_PRICE/100)),
+AMOUNTINCLTAX = ROUND(ri.purchaseprice * 1.1 * (1 + (ipr.MARKUP_PRICE/100))/5,2) * 5
+FROM PRICEDISCTABLE pdt
+INNER JOIN RETAILITEM ri on pdt.ITEMRELATION = ri.itemid
+INNER JOIN ITEMPRERISE ipr on pdt.itemrelation = ipr.ItemLookupCode
+
+END
+
+GO
+
+
+
+
