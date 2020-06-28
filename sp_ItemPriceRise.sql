@@ -71,6 +71,6 @@ END
 
 GO
 
-
+exec sp_ITEMPRERISE
 
 
